@@ -331,7 +331,8 @@ const BountyList: React.FC = () => {
         }));
 
       const bountyData = await Promise.all(bountyPromises);
-      setPostData(bountyData);
+      const filterBountyData = bountyData.filter((item:any) => item.tags.map((tag:any) => tag.toLowerCase()).includes("sonic"));
+      setPostData(filterBountyData);
     } catch (error) {
       console.error("Error fetching bounties:", error);
     } finally {
@@ -348,7 +349,7 @@ const BountyList: React.FC = () => {
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      console.log("Data from IPFS:", data);
+      // console.log("Data from IPFS:", data);
       return data as IPost;
     } catch (error) {
       console.error("IPFS Error:", error.message);
