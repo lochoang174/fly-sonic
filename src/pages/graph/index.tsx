@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { GraphCanvas, GraphCanvasRef, GraphNode, useSelection } from "reagraph";
-
 // Basic node interface that all node types extend from
 interface BaseNode extends GraphNode {
   id: string;
@@ -42,9 +41,8 @@ export default function GraphPage() {
     ref: graphRef,
     nodes: nodes,
     edges: edges,
-    pathSelectionType: 'in',
-    pathHoverType: 'in'
-
+    pathSelectionType: "in",
+    pathHoverType: "in",
   });
   useEffect(() => {
     console.log("Selected Node:", edges);
@@ -64,9 +62,13 @@ export default function GraphPage() {
     try {
       setLoading(true);
 
-      const url = `${import.meta.env.VITE_API_SERVER_URL}/data`;
+      // const url = `${import.meta.env.VITE_API_SERVER_URL}/knowledge/graph.json`;
+      const url = `http://localhost:5173/knowledge/graph.json`;
       const response = await axios.get(url);
-      if (!response.data) return;
+      console.log("🚀 ~ fetchData ~ response:", response)
+      console.log("🚀 ~ fetchData ~ url:", url)
+      // const response = await axios.get(url);
+      // if (!response.data) return;
 
       const res: ResponseType = response.data;
       console.log("Nodes");
@@ -151,7 +153,7 @@ export default function GraphPage() {
             onNodeClick={(node) => {
               onNodeClick(node); // Gọi sự kiện từ `useSelection`
               handleNodeClick(node); // Cập nhật state của `selectedNode`
-            }}            
+            }}
             cameraMode="pan"
           />
         )}
@@ -216,8 +218,15 @@ export default function GraphPage() {
                               {relatedPost.content}
                             </p>
                             <span>
-                            Url: <a href={relatedPost.url} target="_blank" rel="noopener noreferrer" className="text-blue-600">{relatedPost.url}</a>
-
+                              Url:{" "}
+                              <a
+                                href={relatedPost.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600"
+                              >
+                                {relatedPost.url}
+                              </a>
                             </span>
                           </div>
                         );
