@@ -296,14 +296,15 @@ const BountyList: React.FC = () => {
     try {
       const rewards = await rewardServices.findAll();
       const bountyPromises = rewards
-        .filter(item => item.bountyId.length > 40)
-        .map(async item => ({
-          ...(await getPinataData(item.bountyId)),
-          cid: item.bountyId
-        }));
+      .filter((item:any) => item.bountyId.length > 40)
+      .map(async (item:any) => ({
+        ...(await getPinataData(item.bountyId)),
+        cid: item.bountyId
+      }));
 
       const bountyData = await Promise.all(bountyPromises);
-      setPostData(bountyData);
+      const filterBountyData = bountyData.filter((item:any) => item.tags.map((tag:any) => tag.toLowerCase()).includes("sonic"));
+      setPostData(filterBountyData);
     } catch (error) {
       console.error("Error fetching bounties:", error);
     } finally {
@@ -319,7 +320,7 @@ const BountyList: React.FC = () => {
       const response = await fetch(`https://ipfs.io/ipfs/${cid}`);
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      console.log("Data from IPFS:", data);
+      // console.log("Data from IPFS:", data);
       return data as IPost;
     } catch (error) {
       console.error("IPFS Error:", error.message);
