@@ -69,6 +69,7 @@ export default function GraphPage() {
       if (!response.data) return;
 
       const res: ResponseType = response.data;
+      console.log("Nodes");
       console.log(res.nodes);
 
       // Process nodes and add colors based on type

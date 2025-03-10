@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowRight, Award, Clock, Users, DollarSign, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import BountySubmissionForm, { BountyFormData } from './bounty-submission-form';
-import { useContract } from '../../hooks/use-contract';
-import { rewardServices } from '../../utils/sonic';
-import { pinata } from '../../utils/config/PinataConfig';
-import { IPost } from '@/types/post';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ArrowRight,
+  Award,
+  Clock,
+  Users,
+  DollarSign,
+  Plus,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import BountySubmissionForm, { BountyFormData } from "./bounty-submission-form";
+import { useContract } from "../../hooks/use-contract";
+import { rewardServices } from "../../utils/sonic";
+import { pinata } from "../../utils/config/PinataConfig";
+import { IPost } from "@/types/post";
 
 // Định nghĩa kiểu dữ liệu cho Bounty
 export interface BountyType {
@@ -16,7 +24,7 @@ export interface BountyType {
   reward: number;
   deadline: string;
   participants: number;
-  status: 'open' | 'closed' | 'in-progress';
+  status: "open" | "closed" | "in-progress";
   tags: string[];
   createdBy: string;
   requirements: string[];
@@ -48,7 +56,7 @@ const BountyCard: React.FC<BountyCardProps> = ({ postData, onClick }) => {
     const deadline = new Date(Date.now() + oneWeek).getTime();
     const difference = deadline - new Date().getTime();
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-    return days > 0 ? `${days} days left` : 'Expired';
+    return days > 0 ? `${days} days left` : "Expired";
   };
   return (
     <motion.div
@@ -61,11 +69,13 @@ const BountyCard: React.FC<BountyCardProps> = ({ postData, onClick }) => {
     >
       {/* Status Badge */}
       <div className="flex justify-between items-center mb-4">
-        <span className={`px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 ${
-        //   true ? 'bg-green-100 text-green-800' : 
-        //  true ? 'bg-blue-100 text-blue-800' : 
-          'bg-gray-100 text-gray-800'
-        }`}>
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 ${
+            //   true ? 'bg-green-100 text-green-800' :
+            //  true ? 'bg-blue-100 text-blue-800' :
+            "bg-gray-100 text-gray-800"
+          }`}
+        >
           {/* {bounty.status.toUpperCase()} */}
           open
         </span>
@@ -77,14 +87,17 @@ const BountyCard: React.FC<BountyCardProps> = ({ postData, onClick }) => {
 
       {/* Title */}
       <h3 className="text-xl font-bold mb-2 line-clamp-2">{postData.title}</h3>
-      
+
       {/* Description */}
       <p className="text-gray-600 mb-4 line-clamp-2">{postData.description}</p>
-      
+
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
         {postData.tags.slice(0, 3).map((tag, index) => (
-          <span key={index} className="px-2 py-1 bg-gray-100 rounded-md text-xs text-gray-700">
+          <span
+            key={index}
+            className="px-2 py-1 bg-gray-100 rounded-md text-xs text-gray-700"
+          >
             {tag}
           </span>
         ))}
@@ -94,12 +107,12 @@ const BountyCard: React.FC<BountyCardProps> = ({ postData, onClick }) => {
           </span>
         )}
       </div>
-      
+
       {/* Footer */}
       <div className="flex justify-between items-center mt-auto">
         <div className="flex items-center text-blue-600 font-medium">
           <DollarSign className="w-5 h-5 mr-1" />
-          1000 USDC
+          1000 S
         </div>
         <div className="flex items-center text-gray-500 text-sm">
           <Users className="w-4 h-4 mr-1" />
@@ -111,44 +124,48 @@ const BountyCard: React.FC<BountyCardProps> = ({ postData, onClick }) => {
 };
 
 // Component Modal hiển thị thông tin chi tiết của Bounty
-const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) => {
+const BountyModal: React.FC<BountyModalProps> = ({
+  postData,
+  isOpen,
+  onClose,
+}) => {
   if (!postData) return null;
 
   // Animation variants
   const modalVariants = {
-    hidden: { y: '100%', opacity: 0 },
-    visible: { 
-      y: 0, 
+    hidden: { y: "100%", opacity: 0 },
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { 
-        type: 'spring',
+      transition: {
+        type: "spring",
         damping: 25,
-        stiffness: 500
-      }
+        stiffness: 500,
+      },
     },
-    exit: { y: '100%', opacity: 0 }
+    exit: { y: "100%", opacity: 0 },
   };
 
   // Border animation
   const borderVariants = {
     hidden: { pathLength: 0, opacity: 0 },
-    visible: { 
-      pathLength: 1, 
+    visible: {
+      pathLength: 1,
       opacity: 1,
-      transition: { 
+      transition: {
         duration: 2,
         ease: "easeInOut",
         repeat: Infinity,
-        repeatType: "reverse" as const
-      }
-    }
+        repeatType: "reverse" as const,
+      },
+    },
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-end justify-center">
-          <motion.div 
+          <motion.div
             className="relative bg-white rounded-t-3xl w-full max-w-4xl mx-4 mt-[200px] shadow-2xl"
             variants={modalVariants}
             initial="hidden"
@@ -157,7 +174,11 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
           >
             {/* Animated Border */}
             <div className="absolute -top-1 left-0 w-full h-full pointer-events-none">
-              <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <svg
+                className="w-full h-full"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
                 <motion.path
                   d="M0,0 L100,0 L100,100 L0,100 L0,0"
                   fill="none"
@@ -169,23 +190,23 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
                 />
               </svg>
             </div>
-            
+
             {/* Close Button */}
-            <button 
+            <button
               onClick={onClose}
               className="absolute top-6 right-6 text-gray-500 hover:text-gray-800 transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
-            
+
             <div className="p-8">
               {/* Header */}
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                'bg-green-100 text-green-800'
-                  }`}>
-                   "open"
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${"bg-green-100 text-green-800"}`}
+                  >
+                    "open"
                   </span>
                   {/* <span className="text-sm text-gray-500">
                     Created by {postData.}
@@ -193,39 +214,46 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
                 </div>
                 <h2 className="text-3xl font-bold">{postData.title}</h2>
               </div>
-              
+
               {/* Main Content */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2">
                   {/* Description */}
                   <div className="mb-8">
                     <h3 className="text-xl font-semibold mb-4">Description</h3>
-                    <p className="text-gray-700 whitespace-pre-line">{postData.description}</p>
+                    <p className="text-gray-700 whitespace-pre-line">
+                      {postData.description}
+                    </p>
                   </div>
-                  
+
                   {/* Requirements */}
                   <div className="mb-8">
                     <h3 className="text-xl font-semibold mb-4">Requirements</h3>
                     <ul className="list-disc pl-5 space-y-2">
                       {postData.requirements.map((req, index) => (
-                        <li key={index} className="text-gray-700">{req}</li>
+                        <li key={index} className="text-gray-700">
+                          {req}
+                        </li>
                       ))}
                     </ul>
                   </div>
-                  
+
                   {/* Tags */}
                   <div className="mb-8">
                     <h3 className="text-xl font-semibold mb-4">Tags</h3>
                     <div className="flex flex-wrap gap-2">
                       {postData.tags.map((tag, index) => (
-                        <span key={index} className="px-3 py-1 bg-gray-100 rounded-md text-sm text-gray-700">
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-gray-100 rounded-md text-sm text-gray-700"
+                        >
                           {tag}
                         </span>
                       ))}
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Sidebar */}
                 <div className="space-y-6">
                   {/* Reward */}
@@ -234,11 +262,9 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
                       <Award className="w-5 h-5 mr-2 text-blue-600" />
                       Reward
                     </h3>
-                    <p className="text-3xl font-bold text-blue-600">
-                      1000 USDC
-                    </p>
+                    <p className="text-3xl font-bold text-blue-600">1000 S</p>
                   </div>
-                  
+
                   {/* Deadline */}
                   <div className="bg-gray-50 rounded-xl p-6">
                     <h3 className="text-xl font-semibold mb-4 flex items-center">
@@ -246,14 +272,16 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
                       Deadline
                     </h3>
                     <p className="text-lg font-medium">
-                    {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                      {new Date(
+                        Date.now() + 7 * 24 * 60 * 60 * 1000
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })}
                     </p>
                   </div>
-                  
+
                   {/* Participants */}
                   <div className="bg-gray-50 rounded-xl p-6">
                     <h3 className="text-xl font-semibold mb-4 flex items-center">
@@ -262,17 +290,17 @@ const BountyModal: React.FC<BountyModalProps> = ({ postData, isOpen, onClose }) 
                     </h3>
                     <p className="text-lg font-medium">47</p>
                   </div>
-                  
+
                   {/* Apply Button */}
-                  { (
-                    <Link 
+                  {
+                    <Link
                       to={`/app/bounty/submit/${postData.cid}`}
                       className="w-full bg-blue-600 text-white py-3 px-6 rounded-xl font-medium flex items-center justify-center hover:bg-blue-700 transition-colors"
                     >
                       Apply for Bounty
                       <ArrowRight className="w-5 h-5 ml-2" />
                     </Link>
-                  )}
+                  }
                 </div>
               </div>
             </div>
@@ -296,10 +324,10 @@ const BountyList: React.FC = () => {
     try {
       const rewards = await rewardServices.findAll();
       const bountyPromises = rewards
-        .filter(item => item.bountyId.length > 40)
-        .map(async item => ({
+        .filter((item) => item.bountyId.length > 40)
+        .map(async (item) => ({
           ...(await getPinataData(item.bountyId)),
-          cid: item.bountyId
+          cid: item.bountyId,
         }));
 
       const bountyData = await Promise.all(bountyPromises);
@@ -317,7 +345,8 @@ const BountyList: React.FC = () => {
   const getPinataData = async (cid: string): Promise<IPost> => {
     try {
       const response = await fetch(`https://ipfs.io/ipfs/${cid}`);
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
       console.log("Data from IPFS:", data);
       return data as IPost;
@@ -326,7 +355,7 @@ const BountyList: React.FC = () => {
       throw error;
     }
   };
-  
+
   // Giả lập dữ liệu
   useEffect(() => {
     // Trong thực tế, bạn sẽ gọi API để lấy dữ liệu
@@ -402,7 +431,6 @@ const BountyList: React.FC = () => {
     //     ]
     //   }
     // ];
-
     // setTimeout(() => {
     //   setBounties(mockBounties);
     //   setLoading(false);
@@ -435,18 +463,18 @@ const BountyList: React.FC = () => {
       reward: formData.reward,
       deadline: formData.deadline,
       participants: 0, // Mặc định là 0
-      status: 'open', // Mặc định là open
+      status: "open", // Mặc định là open
       tags: formData.tags,
-      createdBy: 'Current User', // Trong thực tế, lấy từ user đang đăng nhập
+      createdBy: "Current User", // Trong thực tế, lấy từ user đang đăng nhập
       requirements: formData.requirements,
-      submissionLink: '#'
+      submissionLink: "#",
     };
 
     // Thêm bounty mới vào danh sách
     setBounties([newBounty, ...bounties]);
 
     // Hiển thị thông báo thành công (có thể thêm toast notification ở đây)
-    console.log('Bounty created successfully:', newBounty);
+    console.log("Bounty created successfully:", newBounty);
   };
 
   return (
@@ -454,9 +482,11 @@ const BountyList: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-4xl font-bold mb-2">Bounties</h1>
-          <p className="text-gray-600">Discover and contribute to exciting projects</p>
+          <p className="text-gray-600">
+            Discover and contribute to exciting projects
+          </p>
         </div>
-        
+
         {/* Nút tạo bounty mới */}
         <button
           onClick={handleOpenForm}
@@ -470,7 +500,10 @@ const BountyList: React.FC = () => {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 animate-pulse">
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 animate-pulse"
+            >
               <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
               <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
               <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
@@ -489,22 +522,22 @@ const BountyList: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {postData.map((bounty) => (
-            <BountyCard 
-              key={bounty.description} 
-              postData={bounty} 
-              onClick={handleOpenModal} 
+            <BountyCard
+              key={bounty.description}
+              postData={bounty}
+              onClick={handleOpenModal}
             />
           ))}
         </div>
       )}
 
-      <BountyModal 
-        // bounty={selectedBounty} 
-        isOpen={isModalOpen} 
-        onClose={handleCloseModal} 
+      <BountyModal
+        // bounty={selectedBounty}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
         postData={selectedBounty}
       />
-      
+
       {/* Form tạo bounty mới */}
       <BountySubmissionForm
         isOpen={isFormOpen}
